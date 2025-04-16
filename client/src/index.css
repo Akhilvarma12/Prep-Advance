@@ -1,0 +1,222 @@
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Container for the output component */
+.output-container {
+  width: 50%;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Header styling for the Output label */
+.output-container h2 {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+/* Styling for the run code button */
+.run-button {
+  padding: 8px 16px;
+  font-size: 14px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.run-button:hover {
+  background-color: #45a049;
+}
+
+.run-button.loading {
+  background-color: #808080;
+  cursor: not-allowed;
+}
+
+.run-button:disabled {
+  background-color: #808080;
+  cursor: not-allowed;
+}
+
+/* Box to display the output */
+.output-box {
+  height: 75vh;
+  padding: 10px;
+  margin-top: 10px;
+  background-color: #333;
+  color: white;
+  border-radius: 4px;
+  border: 1px solid #333;
+  overflow-y: scroll;
+}
+
+.output-box.error {
+  border-color: #ff4d4d;
+  color: #ff4d4d;
+}
+
+/* Container for the entire editor component */
+.editor-container {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+/* Header section for language selection */
+.editor-header {
+  margin-bottom: 10px;
+}
+
+/* Main section containing the editor and output */
+.editor-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+/* Editor area */
+.editor-box {
+  width: 70%;
+  background-color: #1e1e1e;
+  border-radius: 5px;
+  padding: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Output section */
+.output-box {
+  width: 25%;
+  background-color: #f4f4f4;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Container for the language selector component */
+.language-selector-container {
+  margin-left: 10px;
+  margin-bottom: 20px;
+}
+
+/* Label styling */
+.language-label {
+  font-size: 18px;
+  margin-bottom: 8px;
+  display: block;
+}
+
+/* Container for the menu button and list */
+.menu-container {
+  position: relative;
+}
+
+/* Button to show the language menu */
+.menu-button {
+  padding: 8px 16px;
+  font-size: 14px;
+  background-color: #1a202c;
+  color: white;
+  border: 1px solid #333;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.menu-button:hover {
+  background-color: #2d3748;
+}
+
+/* Menu list with language options */
+.menu-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background-color: #110c1b;
+  border-radius: 4px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  z-index: 1;
+}
+
+/* Menu item styling */
+.menu-item {
+  padding: 8px 16px;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: transparent;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.menu-item.active {
+  color: #3182ce;
+  background-color: #2d3748;
+}
+
+.menu-item:hover {
+  color: #3182ce;
+  background-color: #2d3748;
+}
+
+/* Version text for each language option */
+.version {
+  color: #cbd5e0;
+  font-size: 12px;
+}
+
+/* Container for the entire editor component */
+.editor-container {
+  width: 100%;
+  padding: 20px;
+}
+
+/* Header section */
+.editor-header {
+  margin-bottom: 20px;
+}
+
+/* Main section containing the editor and output side by side */
+.editor-main {
+  display: flex;
+  flex-direction: row;
+  width: 100vw;
+  justify-content: space-between;
+  gap: 20px; /* Adjust gap between editor and output */
+}
+
+/* Each section (editor and output) takes up 50% width */
+.editor-box,
+.output-box {
+  flex: 1; /* Ensures both boxes take equal space */
+  max-width: 500px; /* Optional: limits max width */
+  width: 200px;
+}
+
+/* Ensuring the editor box takes up all available height */
+.editor-box {
+  height: 75vh; /* Adjust height based on your requirements */
+}
+
+/* Optional: Style for Output box */
+.output-box {
+  height: 75vh;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+  box-sizing: border-box;
+  overflow-y: auto; /* If output is too long, it will be scrollable */
+}
+
