@@ -16,10 +16,12 @@ import ResumeApp from "./components/Resume/ResumeApp";
 import ResumeForm from "./components/Resume/ResumeForm";
 import EditorPage from "./components/Collab/EditorPage";
 import CollabHome from "./components/Collab/CollabHome";
+import {Toaster} from "react-hot-toast";
 
 function App() {
   return (
     <>
+    <Toaster position="top-center"></Toaster>
       <Router>
         <Navbar />
         <Routes>

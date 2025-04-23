@@ -8,6 +8,16 @@ dotenv.config();
 export default defineConfig({
   plugins: [react()],
   define: {
-    'process.env': process.env, // Pass environment variables to Vite
+    'process.env': process.env,
   },
+  optimizeDeps: {
+    include: [
+      'codemirror',
+      'codemirror/mode/javascript/javascript',
+      'codemirror/addon/edit/closetag',
+      'codemirror/addon/edit/closebrackets',
+      'codemirror/lib/codemirror.css',
+      'codemirror/theme/dracula.css'
+    ]
+  }
 });
