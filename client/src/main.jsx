@@ -14,11 +14,12 @@ if (!PUBLISHABLE_KEY) {
 const theme = createTheme();
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
+  // <StrictMode>
     <ClerkProvider publishableKey={PUBLISHABLE_KEY} afterSignOutUrl="/">
     <ThemeProvider theme={theme}>
       <App />
     </ThemeProvider>
     </ClerkProvider>
-  </StrictMode>,
+  //  </StrictMode> 
+  
 )

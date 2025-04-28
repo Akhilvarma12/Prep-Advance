@@ -6,35 +6,57 @@ import "codemirror/addon/edit/closebrackets";
 import "codemirror/lib/codemirror.css";
 import CodeMirror from "codemirror";
 
-function CodeEditor() {
+function CodeEditor({ socketRef, roomId,onCodeChange }) {
   const editorRef = useRef(null);
-  const cmInstanceRef = useRef(null); // track CodeMirror instance
 
   useEffect(() => {
-    if (cmInstanceRef.current) return; // avoid initializing twice
+    const init = async () => {
+      const editor = CodeMirror.fromTextArea(
+        document.getElementById("realTimeEditor"),
+        {
+          mode: { name: "javascript", json: true },
+          theme: "dracula",
+          autoCloseTags: true,
+          autoCloseBrackets: true,
+          lineNumbers: true,
+        }
+      );
+      //for code sync
+      editorRef.current = editor;
 
-    cmInstanceRef.current = CodeMirror.fromTextArea(editorRef.current, {
-      mode: { name: "javascript", json: true },
-      theme: "dracula",
-      autoCloseTags: true,
-      autoCloseBrackets: true,
-      lineNumbers: true,
-    });
-
-    cmInstanceRef.current.setSize(null, "100%");
-
-    return () => {
-      // Cleanup: Remove the editor if component unmounts
-      if (cmInstanceRef.current) {
-        cmInstanceRef.current.toTextArea();
-        cmInstanceRef.current = null;
-      }
+      editor.setSize("100%", "600px");
+      editorRef.current.on("change", (instance, changes) => {
+        // console.log('changes',instance,changes)
+        const { origin } = changes;
+        const code = instance.getValue();
+        onCodeChange(code);
+        if (origin !== "setValue") {
+          socketRef.current.emit("code-change", {
+            roomId,
+            code,
+          });
+        }
+      });
     };
+    init();
   }, []);
 
+  useEffect(() => {
+    if (socketRef.current) {
+      socketRef.current.on("code-change", ({ code }) => {
+        if (code !== null) {
+          editorRef.current.setValue(code);
+        }
+      });
+    }
+    return () => {
+      socketRef.current.off("code-change");
+    };
+  }, [socketRef.current]);
+
   return (
-    <div style={{ height: "600px" }}>
-      <textarea ref={editorRef}></textarea>
+    <div style={{ height: "600px", width: "100%" }}>
+      <textarea id="realTimeEditor"></textarea>
     </div>
   );
 }
