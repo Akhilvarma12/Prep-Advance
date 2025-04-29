@@ -6,27 +6,30 @@ import "codemirror/addon/edit/closebrackets";
 import "codemirror/lib/codemirror.css";
 import CodeMirror from "codemirror";
 
-function CodeEditor({ socketRef, roomId,onCodeChange }) {
+function CodeEditor({ socketRef, roomId, onCodeChange }) {
   const editorRef = useRef(null);
 
   useEffect(() => {
     const init = async () => {
-      const editor = CodeMirror.fromTextArea(
-        document.getElementById("realTimeEditor"),
-        {
-          mode: { name: "javascript", json: true },
-          theme: "dracula",
-          autoCloseTags: true,
-          autoCloseBrackets: true,
-          lineNumbers: true,
-        }
-      );
-      //for code sync
+      const editor = CodeMirror.fromTextArea(document.getElementById("realTimeEditor"), {
+        mode: { name: "javascript", json: true },
+        theme: "dracula",
+        autoCloseTags: true,
+        autoCloseBrackets: true,
+        lineNumbers: true,
+        lineWrapping: true,
+        styleActiveLine: true,
+      });
+
+      // Increase the font size here
+      const style = editor.getWrapperElement().style;
+      style.fontSize = "24px";  // You can adjust this to your preferred font size
+      editor.setSize("100%", "600px");
+
+      // for code sync
       editorRef.current = editor;
 
-      editor.setSize("100%", "600px");
       editorRef.current.on("change", (instance, changes) => {
-        // console.log('changes',instance,changes)
         const { origin } = changes;
         const code = instance.getValue();
         onCodeChange(code);
@@ -38,6 +41,7 @@ function CodeEditor({ socketRef, roomId,onCodeChange }) {
         }
       });
     };
+
     init();
   }, []);
 
@@ -49,6 +53,7 @@ function CodeEditor({ socketRef, roomId,onCodeChange }) {
         }
       });
     }
+
     return () => {
       socketRef.current.off("code-change");
     };

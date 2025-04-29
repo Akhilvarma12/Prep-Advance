@@ -1,15 +1,14 @@
 import React, { useState } from "react";
 import "../../index.css";
-import { Pointer } from "lucide-react";
 import { v4 as uuid } from "uuid";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { TextField, Button, Typography, Box, Paper } from "@mui/material";
 
 function CollabHome() {
   const [roomId, setRoomId] = useState("");
   const [username, setUsername] = useState("");
-
-  const navigate=useNavigate();
+  const navigate = useNavigate();
 
   const generateRoomId = (e) => {
     e.preventDefault();
@@ -17,47 +16,69 @@ function CollabHome() {
     setRoomId(id);
     toast.success("Room Id is generated");
   };
-  const joinRoom=()=>{
-    if(!roomId || !username){
-      toast.error("Both the fields are required")
-      return
+
+  const joinRoom = () => {
+    if (!roomId || !username) {
+      toast.error("Both the fields are required");
+      return;
     }
-    navigate(`/dashboard/collab/${roomId}`,{
-      state:{username}
-     })
-     toast.success('Room is created')
-    }
+    navigate(`/dashboard/collab/${roomId}`, {
+      state: { username },
+    });
+    toast.success("Room is created");
+  };
+
   return (
-    <div
+    <Box
       className="collab-home"
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      minHeight="100vh"
     >
-      <div className="room-form">
-        <h4>Enter the room ID</h4>
-        <input
+      <Paper elevation={3} sx={{ padding: 4, width: 400 }}>
+        <Typography variant="h6" gutterBottom>
+          Enter the Room ID
+        </Typography>
+
+        <TextField
+          fullWidth
+          label="Room ID"
           value={roomId}
           onChange={(e) => setRoomId(e.target.value)}
-          type="text"
-          placeholder="Room Id"
+          margin="normal"
+          size="small"
         />
-        <input 
-        value={username}
-        onChange={(e)=>setUsername(e.target.value)}
-        type="text"
-        placeholder="Username" />
-        <button onClick={joinRoom}>Join </button>
-        <p className="mt-3">
-          Dont have a room Id?
-          <span style={{ cursor: "pointer" }} onClick={generateRoomId} value>
+        <TextField
+          fullWidth
+          label="Username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          margin="normal"
+          size="small"
+        />
+
+        <Button
+          variant="contained"
+          color="primary"
+          fullWidth
+          onClick={joinRoom}
+          sx={{ mt: 2 }}
+        >
+          Join
+        </Button>
+
+        <Typography variant="body2" align="center" sx={{ mt: 2 }}>
+          Don’t have a room ID?{" "}
+          <span
+            style={{ cursor: "pointer", color: "#3f51b5", fontWeight: 500 }}
+            onClick={generateRoomId}
+          >
             New Room
           </span>
-        </p>
-      </div>
-    </div>
+        </Typography>
+      </Paper>
+    </Box>
   );
 }
 
