@@ -4,6 +4,10 @@ const http = require("http");
 const path = require("path");
 const { Server } = require("socket.io");
 
+require('dotenv').config();
+
+import path from "path";
+
 const server = http.createServer(app);
 const io = new Server(server);
 
@@ -60,4 +64,14 @@ io.on("connection", (socket) => {
 });
 
 const PORT = process.env.PORT || 5000;
+const __dirname=path.resolve();
+
+if(process.env.NODE_ENV === "production"){
+  app.use(express.static(path.join(__dirname,"../client/dist")))
+
+  app.get('*',(req,res)=>{
+    res.sendFile(path.join(__dirname,"../client","dist","index.html"))
+  })
+}
+
 server.listen(PORT, () => console.log(`Listening on port at  ${PORT}`));

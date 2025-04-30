@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "start": "node src/index.js"
   },
   "author": "",
   "license": "ISC",
@@ -15,6 +16,7 @@
     "express": "^4.21.2",
     "nodemon": "^3.1.9",
     "socket.io": "^4.8.1",
-    "socket.io-client": "^4.8.1"
+    "socket.io-client": "^4.8.1",
+    "uppf": "file:.."
   }
 }
