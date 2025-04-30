@@ -1,12 +1,13 @@
-const express = require("express");
+import express from "express";
+import http from "http";
+import path from "path";
+import { Server } from "socket.io";
+import dotenv from "dotenv";
+
+// Configure dotenv
+dotenv.config();
+
 const app = express();
-const http = require("http");
-const path = require("path");
-const { Server } = require("socket.io");
-
-require('dotenv').config();
-
-
 const server = http.createServer(app);
 const io = new Server(server);
 
@@ -24,15 +25,16 @@ const getAllConnectedClients = (roomId) => {
 };
 
 io.on("connection", (socket) => {
-  // when they join
+  // When they join
   socket.on("join", ({ roomId, username }) => {
-    // to join the room
+    // Join the room
     userSocketMap[socket.id] = username;
     socket.join(roomId);
 
-    // to get all the persons in the room
+    // Get all the persons in the room
     const clients = getAllConnectedClients(roomId);
-    //notify user joining
+    
+    // Notify user joining
     clients.forEach(({ socketId }) => {
       io.to(socketId).emit("joined", {
         clients,
@@ -41,14 +43,18 @@ io.on("connection", (socket) => {
       });
     });
   });
-  //for active changes in code
+
+  // For active changes in code
   socket.on("code-change", ({ roomId, code }) => {
     socket.in(roomId).emit("code-change", { code });
   });
+
+  // Sync code with another client
   socket.on("sync-code", ({ socketId, code }) => {
     io.to(socketId).emit("code-change", { code });
   });
-  //when they leave
+
+  // When they leave
   socket.on("disconnecting", () => {
     const rooms = [...socket.rooms];
     rooms.forEach((roomId) => {
@@ -63,14 +69,17 @@ io.on("connection", (socket) => {
 });
 
 const PORT = process.env.PORT || 5000;
-const __dirname=path.resolve();
 
-if(process.env.NODE_ENV === "production"){
-  app.use(express.static(path.join(__dirname,"../client/dist")))
+// Get the directory name
+const __dirname = path.resolve();
 
-  app.get('*',(req,res)=>{
-    res.sendFile(path.join(__dirname,"../client","dist","index.html"))
-  })
+if (process.env.NODE_ENV === "production") {
+  // Serve static files for production
+  app.use(express.static(path.join(__dirname, "../client/dist")));
+
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "../client", "dist", "index.html"));
+  });
 }
 
-server.listen(PORT, () => console.log(`Listening on port at  ${PORT}`));
+server.listen(PORT, () => console.log(`Listening on port ${PORT}`));
