@@ -6,7 +6,6 @@ const { Server } = require("socket.io");
 
 require('dotenv').config();
 
-import path from "path";
 
 const server = http.createServer(app);
 const io = new Server(server);
