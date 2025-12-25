@@ -76,35 +76,76 @@ const RoadmapInput = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleGenerate = async () => {
-    if (!role || !duration) {
-      alert("Please provide both Role and Duration!");
+const handleGenerate = async () => {
+  if (!role || !duration) {
+    alert("Please provide both Role and Duration!");
+    return;
+  }
+
+  setLoading(true);
+
+  try {
+    const prompt = `
+Generate a ${duration}-day preparation roadmap for the role "${role}".
+
+Rules:
+- Divide the roadmap into 4–5 phases.
+- Each phase must include:
+  - duration (string)
+  - topics (max 5 items)
+  - projects (max 2 items)
+  - resources:
+    - youtube (max 3 channel names)
+    - courses (max 2 course names)
+    - websites (max 3 websites)
+
+Include DSA only if relevant to the role.
+All resources must be free.
+
+Return ONLY valid JSON in the following structure:
+
+{
+  "roadmap": {
+    "phase_1": {
+      "duration": "",
+      "topics": [],
+      "projects": [],
+      "resources": {
+        "youtube": [],
+        "courses": [],
+        "websites": []
+      }
+    }
+  },
+  "final_resources": {
+    "youtube_channels": [],
+    "certifications": [],
+    "websites": []
+  }
+}
+
+Do NOT include markdown, explanations, or extra text.
+`;
+
+    const roadmap = await getResponse(prompt);
+
+    if (!roadmap) {
+      alert("AI service is busy. Please try again in a moment.");
       return;
     }
-    console.log(duration)
 
-    setLoading(true);
+    const slugifyRole = slugify(role);
+    navigate(`/dashboard/roadmap/${slugifyRole}`, {
+      state: { roadmap, role },
+    });
+  } catch (error) {
+    console.error("Error generating roadmap:", error);
+    alert("Failed to generate roadmap!");
+  } finally {
+    setLoading(false);
+  }
+};
 
-    try {
-      const prompt = `generate a ${duration} days preparation roadmap for a ${role} and 3 best youtube playlists channel and 3 best course certifications  which are free with a series of projects at each phase and at the end of the roadmap.it mush contain youtube channel names and course name along with their websites name in it.It should give a breif decription of what to do in each phase.If the role uses any type of DSA then include DSA in the roadmap accordingly.
-
-      The response must follow only this JSON format:
-      ${sampleJSON}
-
-      Provide the response strictly in the JSON format only. Do not include any additional text.`;
-
-      const roadmap = await getResponse(prompt);
-
-      const slugifyRole = slugify(role);
-
-      navigate(`/dashboard/roadmap/${slugifyRole}`, { state: { roadmap, role } });
-    } catch (error) {
-      console.error("Error generating roadmap:", error);
-      alert("Failed to generate roadmap!");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <Container maxWidth="sm" sx={{ py: 5 }}>
