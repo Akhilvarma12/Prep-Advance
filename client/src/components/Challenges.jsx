@@ -8,6 +8,7 @@ import {
   Chip,
   Box,
   Button,
+  Stack,
 } from '@mui/material';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
@@ -52,71 +53,116 @@ const challenges = [
 
 const Challenges = () => {
   return (
-    <Box sx={{ padding: '20px' }}>
+    <Box sx={{ px: 2, py: 3 }}>
+      {/* Header */}
       <Box
         display="flex"
         justifyContent="space-between"
         alignItems="center"
         mb={3}
       >
-        <Typography variant="h4" fontWeight="bold">
+        <Typography variant="h5" fontWeight={700}>
           Hiring Challenges
         </Typography>
+
         <Button
           variant="text"
-          endIcon={<ArrowForwardIosIcon />}
-          sx={{ textTransform: 'none' }}
+          endIcon={<ArrowForwardIosIcon fontSize="small" />}
+          sx={{ textTransform: 'none', fontWeight: 600 }}
         >
           View All
         </Button>
       </Box>
+
+      {/* Cards */}
       <Grid container spacing={3}>
         {challenges.map((challenge) => (
           <Grid item xs={12} sm={6} md={4} lg={3} key={challenge.id}>
-            <Card sx={{ height: '100%', cursor: 'pointer', boxShadow: 3 }}>
-              <CardMedia
-                component="img"
-                alt={challenge.title}
-                height="140"
-                image={challenge.image}
-              />
+            <Card
+              sx={{
+                height: '100%',
+                borderRadius: 3,
+                transition: 'all 0.3s ease',
+                cursor: 'pointer',
+                '&:hover': {
+                  transform: 'translateY(-6px)',
+                  boxShadow: 6,
+                },
+              }}
+            >
+              {/* Logo / Banner */}
+              <Box
+                sx={{
+                  height: 120,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: '#f5f7fa',
+                }}
+              >
+                <CardMedia
+                  component="img"
+                  image={challenge.image}
+                  alt={challenge.title}
+                  sx={{
+                    maxHeight: 80,
+                    maxWidth: '70%',
+                    objectFit: 'contain',
+                  }}
+                />
+              </Box>
+
               <CardContent>
-                <Box display="flex" gap={1} mb={1}>
+                {/* Tags */}
+                <Stack direction="row" spacing={1} mb={1}>
                   {challenge.tags.map((tag, index) => (
                     <Chip
                       key={index}
                       label={tag}
                       size="small"
                       sx={{
-                        backgroundColor: '#e0f7fa',
-                        color: '#006064',
-                        fontWeight: 'bold',
+                        fontWeight: 600,
+                        backgroundColor: '#eef2ff',
+                        color: '#3730a3',
                       }}
                     />
                   ))}
-                </Box>
+                </Stack>
+
+                {/* Title */}
                 <Typography
-                  variant="h6"
-                  fontWeight="bold"
-                  sx={{ mb: 0.5 }}
+                  variant="subtitle1"
+                  fontWeight={700}
+                  gutterBottom
                   noWrap
                 >
                   {challenge.title}
                 </Typography>
-                <Typography variant="body2" color="textSecondary" noWrap>
+
+                {/* Organizer */}
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  noWrap
+                >
                   {challenge.organizer}
                 </Typography>
+
+                {/* Footer Stats */}
                 <Box
+                  mt={2}
                   display="flex"
                   justifyContent="space-between"
-                  alignItems="center"
-                  mt={2}
                 >
-                  <Typography variant="body2">
-                    👥 {challenge.applied} Applied
+                  <Typography variant="caption" fontWeight={600}>
+                    {challenge.applied} Applied
                   </Typography>
-                  <Typography variant="body2">
-                    ⏳ {challenge.daysLeft} days left
+                  <Typography
+                    variant="caption"
+                    fontWeight={600}
+                    color="error.main"
+                  >
+                    {challenge.daysLeft} days left
                   </Typography>
                 </Box>
               </CardContent>
