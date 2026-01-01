@@ -7,6 +7,7 @@ import {
   Grid,
   Box,
   Avatar,
+  Chip,
 } from "@mui/material";
 
 // Static job data
@@ -61,59 +62,107 @@ const jobData = [
   },
 ];
 
+// Apply click handler
 const handleApplyClick = (website) => {
-    window.open(website, "_blank");
-  };
+  window.open(website, "_blank");
+};
 
 const JobOpenings = () => {
   return (
-    <Box sx={{ padding: "20px", maxWidth: "800px", margin: "0 auto" }}>
-      <Typography variant="h4" component="h1" align="center" gutterBottom>
+    <Box sx={{ py: 4, maxWidth: "900px", mx: "auto" }}>
+      <Typography
+        variant="h4"
+        align="center"
+        fontWeight={600}
+        gutterBottom
+      >
         Latest Job Openings
       </Typography>
 
-      <Grid container spacing={2}>
+      <Grid container spacing={3}>
         {jobData.map((job) => (
           <Grid item xs={12} key={job.id}>
             <Card
+              elevation={0}
               sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                padding: "10px 20px",
-                border: "1px solid #e0e0e0",
+                borderRadius: 3,
+                border: "1px solid #eaeaea",
+                transition: "all 0.25s ease",
+                "&:hover": {
+                  boxShadow: "0 10px 25px rgba(0,0,0,0.08)",
+                  transform: "translateY(-2px)",
+                },
               }}
             >
-              <Box sx={{ display: "flex", alignItems: "center", gap: "15px" }}>
-                <Avatar src={job.companyLogo} alt={job.companyName} />
-                <Box>
-                  <Typography variant="h6">{job.companyName}</Typography>
-                  <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    gutterBottom
-                  >
-                    {job.companyDetails}
-                  </Typography>
-                  <Typography variant="body1" color="primary">
-                    {job.jobRole}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {job.jobType} • {job.location} • {job.category}
-                  </Typography>
-                  <Typography variant="caption" color="text.secondary">
-                    {job.postedTime}
-                  </Typography>
-                </Box>
-              </Box>
-              <Button
-                variant="contained"
-                color="warning"
-                sx={{ minWidth: "100px" }}
-                onClick={() => handleApplyClick(job.website)}
+              <CardContent
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  gap: 2,
+                }}
               >
-                Apply
-              </Button>
+                {/* LEFT CONTENT */}
+                <Box sx={{ display: "flex", gap: 2, alignItems: "flex-start" }}>
+                  <Avatar
+                    src={job.companyLogo}
+                    alt={job.companyName}
+                    sx={{
+                      width: 56,
+                      height: 56,
+                      border: "1px solid #ddd",
+                      bgcolor: "#fff",
+                    }}
+                  />
+
+                  <Box>
+                    <Typography variant="h6" fontWeight={600}>
+                      {job.companyName}
+                    </Typography>
+
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ mb: 0.5 }}
+                    >
+                      {job.companyDetails}
+                    </Typography>
+
+                    <Typography
+                      variant="body1"
+                      sx={{ fontWeight: 500, mb: 0.5 }}
+                    >
+                      {job.jobRole}
+                    </Typography>
+
+                    <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", mb: 0.5 }}>
+                      <Chip label={job.jobType} size="small" />
+                      <Chip label={job.location} size="small" />
+                      <Chip label={job.category} size="small" />
+                    </Box>
+
+                    <Typography variant="caption" color="text.secondary">
+                      Posted {job.postedTime}
+                    </Typography>
+                  </Box>
+                </Box>
+
+                {/* RIGHT ACTION */}
+                <Button
+                  variant="contained"
+                  color="warning"
+                  sx={{
+                    px: 3,
+                    py: 1,
+                    borderRadius: 2,
+                    fontWeight: 600,
+                    textTransform: "none",
+                  }}
+                  onClick={() => handleApplyClick(job.website)}
+                >
+                  Apply
+                </Button>
+              </CardContent>
             </Card>
           </Grid>
         ))}

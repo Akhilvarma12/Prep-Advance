@@ -24,38 +24,72 @@ const Roadmap = () => {
 const [roadmaps, setRoadmaps] = useState(null);
 const [loading, setLoading] = useState(true);
 const [error, setError] = useState("");
+const [rawResponse, setRawResponse] = useState("");
 
 
 useEffect(() => {
   if (!roadmap || typeof roadmap !== "string") {
     setError("No roadmap data received.");
+    setRawResponse(roadmap || "");
     setLoading(false);
     return;
   }
 
+  let cleaned = "";
   try {
-    const cleaned = roadmap
-      .replace(/```json|```/g, "")
-      .trim();
+    cleaned = roadmap.replace(/```json|```/g, "").trim();
 
-    if (!cleaned.startsWith("{") || !cleaned.endsWith("}")) {
-      throw new Error("Incomplete JSON received");
+    let parsed = null;
+
+    // Try direct parse first
+    try {
+      parsed = JSON.parse(cleaned);
+    } catch (e) {
+      // Fallback: try to extract the first {...} object from the string
+      const firstObj = cleaned.indexOf("{");
+      const lastObj = cleaned.lastIndexOf("}");
+
+      if (firstObj !== -1 && lastObj !== -1 && lastObj > firstObj) {
+        const sub = cleaned.slice(firstObj, lastObj + 1);
+        try {
+          parsed = JSON.parse(sub);
+        } catch (e2) {
+          // Another fallback: maybe AI returned an array for roadmap
+          const firstArr = cleaned.indexOf("[");
+          const lastArr = cleaned.lastIndexOf("]");
+          if (firstArr !== -1 && lastArr !== -1 && lastArr > firstArr) {
+            const subArr = cleaned.slice(firstArr, lastArr + 1);
+            try {
+              const arr = JSON.parse(subArr);
+              parsed = { roadmap: arr };
+            } catch (e3) {
+              throw new Error("Incomplete JSON received");
+            }
+          } else {
+            throw new Error("Incomplete JSON received");
+          }
+        }
+      } else {
+        throw new Error("Incomplete JSON received");
+      }
     }
 
-    const parsed = JSON.parse(cleaned);
-
-    if (!parsed.roadmap || typeof parsed.roadmap !== "object") {
+    // Normalise parsed shape: accept either { roadmap: { ... } } or the roadmap object itself
+    if (parsed && parsed.roadmap && typeof parsed.roadmap === "object") {
+      setRoadmaps(parsed);
+    } else if (parsed && typeof parsed === "object") {
+      setRoadmaps({ roadmap: parsed });
+    } else {
       throw new Error("Invalid roadmap structure");
     }
-
-    setRoadmaps(parsed);
   } catch (err) {
-    console.error("Roadmap parsing error:", err);
+    console.error("Roadmap parsing error:", err, { raw: roadmap, cleaned });
+    setRawResponse(cleaned || roadmap || "");
     setError(
       "Failed to generate roadmap. AI response was incomplete. Please try again."
     );
   } finally {
-    setLoading(false); // 🔑 THIS IS THE KEY
+    setLoading(false);
   }
 }, [roadmap]);
 
@@ -69,10 +103,18 @@ if (error) {
         {error}
       </Typography>
 
-      <Button
-        variant="contained"
-        onClick={() => window.location.reload()}
-      >
+      {rawResponse && (
+        <Typography
+          variant="body2"
+          sx={{ mt: 1, whiteSpace: "pre-wrap", wordBreak: "break-word" }}
+        >
+          {rawResponse.length > 600
+            ? `${rawResponse.slice(0, 600)}...`
+            : rawResponse}
+        </Typography>
+      )}
+
+      <Button variant="contained" onClick={() => window.location.reload()}>
         Regenerate Roadmap
       </Button>
     </Box>
